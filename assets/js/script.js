@@ -88,7 +88,15 @@
         minYear: 0,
         maxYear: 9999,
         container: undefined,
-        months: ['January','February','March','April','May','June','July','August','September','October','November','December']
+        position: 'bottom-left',
+        reposition: true,
+        months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+
+        // callback functions
+        onSelect: null,
+        onOpen: null,
+        onClose: null,
+        onDraw: null
     },
     
 
@@ -130,8 +138,35 @@
         var self = this,
             opts = self.config(options);
 
-        // self._v = true; // Initially set visible status to true
+        self._onMouseDown = function(e) {
+            if(!self._v) {
+                return;
+            }
 
+            e = e || window.event;
+            var target = e.target || e.srcElement;
+            if(!target) {
+                return;
+            }
+
+            if(!hasClass(target, 'is-disabled')) {
+                if(hasClass(target, 'mp-month')) {
+                    self.setMonth(target.getAttribute('data-month'));
+                    if(opts.bound) {
+                        sto(function() {
+                            self.hide();
+                            if(opts.blurFieldOnSelect && opts.field) {
+                                opts.field.blur();
+                            }
+                        }, 100);
+                    }
+                }
+            }
+        };
+
+        self._onInputClick = function() {
+            self.show();
+        };
 
         self._onClick = function(e) {
             e = e || window.event;
@@ -140,14 +175,14 @@
             if (!target) {
                 return;
             }
-            if (!hasEventListeners && hasClass(target, 'pika-select')) {
+            if (!hasEventListeners && hasClass(target, 'mp-select')) {
                 if (!target.onchange) {
                     target.setAttribute('onchange', 'return;');
                     addEvent(target, 'change', self._onChange);
                 }
             }
             do {
-                if (hasClass(pEl, 'pika-single') || pEl === opts.trigger) {
+                if (hasClass(pEl, 'mp-single') || pEl === opts.trigger) {
                     return;
                 }
             }
@@ -166,9 +201,10 @@
 
 
         addEvent(self.el, 'mousedown', self._onMouseDown, true);
+        // addEvent(self.el, 'touchend', self._onMouseDown, true);
+        // addEvent(self.el, 'change', self._onChange);
 
-
-        if(!opts.bound) {
+        if(opts.bound) {
             this.hide();
             self.el.className += ' is-bound';
             addEvent(opts.trigger, 'click', self._onInputClick);
@@ -176,8 +212,9 @@
             // addEvent(opts.trigger, 'blur', self._onInputBlur);
         } else {
             this.show();
-            console.log('showing');
         }
+
+
     };
     
     PikaMonth.prototype = {
@@ -195,6 +232,14 @@
             return opts;
         },
 
+        setMonth: function(month) {
+            this.month = month;
+
+            if(typeof this._o.onSelect === 'function') {
+                this._o.onSelect.call(this, this.month);
+            }
+        },
+
         isVisible: function() {
             return this._v;
         },
@@ -206,7 +251,7 @@
                 removeClass(this.el, 'is-hidden');
                 if (this._o.bound) {
                     addEvent(document, 'click', this._onClick);
-                    // this.adjustPosition();
+                    this.adjustPosition();
                 }
                 
             }
@@ -228,6 +273,65 @@
                     this._o.onClose.call(this);
                 }
             }
+        },
+
+        adjustPosition: function() {
+            var field, pEl, width, height, viewportWidth, viewportHeight, scrollTop, left, top, clientRect, leftAligned, bottomAligned;
+
+            if (this._o.container) return;
+
+            this.el.style.position = 'absolute';
+
+            field = this._o.trigger;
+            pEl = field;
+            width = this.el.offsetWidth;
+            height = this.el.offsetHeight;
+            viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+            viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            scrollTop = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop;
+            leftAligned = true;
+            bottomAligned = true;
+
+            if (typeof field.getBoundingClientRect === 'function') {
+                clientRect = field.getBoundingClientRect();
+                left = clientRect.left + window.pageXOffset;
+                top = clientRect.bottom + window.pageYOffset;
+            } else {
+                left = pEl.offsetLeft;
+                top  = pEl.offsetTop + pEl.offsetHeight;
+                while((pEl = pEl.offsetParent)) {
+                    left += pEl.offsetLeft;
+                    top  += pEl.offsetTop;
+                }
+            }
+
+            // default position is bottom & left
+            if ((this._o.reposition && left + width > viewportWidth) ||
+                (
+                    this._o.position.indexOf('right') > -1 &&
+                    left - width + field.offsetWidth > 0
+                )
+            ) {
+                left = left - width + field.offsetWidth;
+                leftAligned = false;
+            }
+            if ((this._o.reposition && top + height > viewportHeight + scrollTop) ||
+                (
+                    this._o.position.indexOf('top') > -1 &&
+                    top - height - field.offsetHeight > 0
+                )
+            ) {
+                top = top - height - field.offsetHeight;
+                bottomAligned = false;
+            }
+
+            this.el.style.left = left + 'px';
+            this.el.style.top = top + 'px';
+
+            addClass(this.el, leftAligned ? 'left-aligned' : 'right-aligned');
+            addClass(this.el, bottomAligned ? 'bottom-aligned' : 'top-aligned');
+            removeClass(this.el, !leftAligned ? 'left-aligned' : 'right-aligned');
+            removeClass(this.el, !bottomAligned ? 'bottom-aligned' : 'top-aligned');
         }
     };
 

@@ -27,7 +27,11 @@
         var trigger = document.getElementById('datepicker-button')
         var mp = new PikaMonth({
             field: field,
-            trigger: trigger
+            trigger: trigger,
+            position: 'bottom right',
+            onSelect: function(month) {
+                console.log('Alright!', month);
+            }
         });
     </script>
 </body>
