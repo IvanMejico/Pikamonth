@@ -111,7 +111,7 @@
         var html = '';
         html += `<div class="button-group">
                     <button type="button" class="left-button" value="prev">◄</button>
-                    <button type="button" class="center-button" value="${currentYear}">${currentYear}</button>
+                    <button type="button" class="mp-year" value="${currentYear}">${currentYear}</button>
                     <button type="button" class="right-button" value="next">◄</button>
                 </div>`;
         return html;
@@ -175,7 +175,7 @@
             if (!target) {
                 return;
             }
-            if (!hasEventListeners && hasClass(target, 'mp-select')) {
+            if (!hasEventListeners && hasClass(target, 'mp-year')) {
                 if (!target.onchange) {
                     target.setAttribute('onchange', 'return;');
                     addEvent(target, 'change', self._onChange);
@@ -234,6 +234,10 @@
 
         setMonth: function(month) {
             this.month = month;
+
+            if(this._o.field) {
+                this._o.field.value = defaults.months[this.month];
+            }
 
             if(typeof this._o.onSelect === 'function') {
                 this._o.onSelect.call(this, this.month);
