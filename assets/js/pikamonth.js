@@ -1,7 +1,7 @@
 (function (root, factory) {
     'use strict';
 
-    root.PikaMonth = factory(root.moment);
+    root.Pikamonth = factory(root.moment);
 }(this, function(moment){
 
     'use strict';
@@ -134,7 +134,7 @@
 
     },
 
-    PikaMonth = function(options) {
+    Pikamonth = function(options) {
         var self = this,
             opts = self.config(options);
 
@@ -217,7 +217,7 @@
 
     };
     
-    PikaMonth.prototype = {
+    Pikamonth.prototype = {
         config: function(options)  {
             if(!this._o) {
                 this._o = extend({}, defaults, true);
@@ -234,6 +234,7 @@
 
         setMonth: function(month) {
             this.month = month;
+            this.year = getCurrentYear(); //TODO:this is temporary code serving as place holder for year value
 
             if(this._o.field) {
                 this._o.field.value = defaults.months[this.month];
@@ -339,5 +340,5 @@
         }
     };
 
-    return PikaMonth;
+    return Pikamonth;
 }));

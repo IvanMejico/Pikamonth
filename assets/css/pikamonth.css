@@ -1,0 +1,86 @@
+.mp-buttons {
+    color: #fff;
+}
+
+
+.active { display: block !important; }
+
+.mp-single.is-hidden {
+    display: none;
+}
+
+.mp-single {
+    position: absolute;
+    border: 1px solid rgb(85, 84, 84);
+    width: 280px;
+    background: #333131;
+    color: #fff;
+    padding: 7px;
+    border-radius: 2px;
+    font-size: .9em;
+    z-index: 20;
+}
+
+.mp-single div span{
+    background: rgb(29, 29, 29);
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding: 8px 0px;
+    text-transform: capitalize;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.mp-single div span:hover {
+    background-color: #157ab4;
+    color: #fff;
+}
+
+.month-selection {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 5px;
+    font-size: .89em;
+}
+
+.button-group {
+    padding: 0 10px;
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+}
+
+.button-group button {
+    /* display: block; */
+    /* width: 100%; */
+    background: rgb(51, 50, 50);
+    border: transparent;
+    border-radius: 4px;
+    padding: 5px;
+    outline: none;
+    cursor: pointer;
+    color: #fff;
+}
+.button-group button:hover {
+    background-color: rgb(29, 26, 26);
+}
+
+.button-group button:active {
+    filter: brightness(120%);
+}
+
+.right-button {
+    transform: rotate(180deg);
+}
+
+.left-button, .right-button {
+    opacity: 50%;
+}
+.mp-year {
+    font-weight: 600;
+}
+

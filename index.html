@@ -6,6 +6,8 @@
     <title>Date Picker</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="assets/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="assets/css/pikamonth.css">
+
 </head>
 <body>
     <div class="main-content">
@@ -19,13 +21,13 @@
 
         
     </div>
-    <script src="assets/js/moment.min.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="assets/moment.min.js"></script>
+    <script src="assets/js/pikamonth.js"></script>
 
     <script>
         var field = document.getElementById('datepicker-field')
         var trigger = document.getElementById('datepicker-button')
-        var mp = new PikaMonth({
+        var mp = new Pikamonth({
             field: field,
             trigger: trigger,
             position: 'bottom right',
